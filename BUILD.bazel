@@ -1,0 +1,8 @@
+load("@bazel_gazelle//:def.bzl", "gazelle")
+
+# gazelle:prefix toni.systems/goisoboot
+# gazelle:proto disable
+
+gazelle(
+    name = "gazelle",
+)

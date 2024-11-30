@@ -1,0 +1,15 @@
+load("@rules_go//go:def.bzl", "go_binary", "go_library")
+
+go_library(
+    name = "goisoboot_lib",
+    srcs = ["main.go"],
+    importpath = "toni.systems/goisoboot/cmd/goisoboot",
+    visibility = ["//visibility:private"],
+    deps = ["//pkg/cli"],
+)
+
+go_binary(
+    name = "goisoboot",
+    embed = [":goisoboot_lib"],
+    visibility = ["//visibility:public"],
+)

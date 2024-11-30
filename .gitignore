@@ -1,0 +1,9 @@
+.envrc
+.env
+
+bin/
+
+bazel-bin
+bazel-goisoboot*
+bazel-out
+bazel-testlogs

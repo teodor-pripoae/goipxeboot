@@ -1,0 +1,12 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "cli",
+    srcs = [
+        "main.go",
+        "server.go",
+    ],
+    importpath = "toni.systems/goisoboot/pkg/cli",
+    visibility = ["//visibility:public"],
+    deps = ["@com_github_spf13_cobra//:cobra"],
+)
