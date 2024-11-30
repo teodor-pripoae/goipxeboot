@@ -8,5 +8,8 @@ go_library(
     ],
     importpath = "toni.systems/goisoboot/pkg/cli",
     visibility = ["//visibility:public"],
-    deps = ["@com_github_spf13_cobra//:cobra"],
+    deps = [
+        "//pkg/tftp",
+        "@com_github_spf13_cobra//:cobra",
+    ],
 )

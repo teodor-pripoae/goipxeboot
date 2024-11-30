@@ -1,9 +1,20 @@
 package cli
 
-import "github.com/spf13/cobra"
+import (
+	"fmt"
+	"os"
 
-func server(cmd *cobra.Command, args []string) error {
-	return nil
+	"github.com/spf13/cobra"
+	"toni.systems/goisoboot/pkg/tftp"
+)
+
+func server(cmd *cobra.Command, args []string) {
+	tftp := tftp.New()
+
+	if err := tftp.Run(); err != nil {
+		fmt.Printf("Error: %v\n", err)
+		os.Exit(1)
+	}
 }
 
 func NewServerCmd() *cobra.Command {
@@ -11,7 +22,7 @@ func NewServerCmd() *cobra.Command {
 		Use:   "server",
 		Short: "Start the goisoboot server",
 		Long:  "Starts TFTP and HTTP Server",
-		RunE:  server,
+		Run:   server,
 	}
 
 	cmd.Flags().IntP("http-port", "p", 8080, "HTTP Port")
