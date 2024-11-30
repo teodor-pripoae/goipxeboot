@@ -1,7 +1,7 @@
 package ipxe
 
 import (
-	"errors"
+	"fmt"
 	"net/http"
 	"path/filepath"
 	"strconv"
@@ -25,25 +25,30 @@ boot`
 		"rd.md":               "0",
 		"rd.net.timeout.dhcp": "10",
 	}
-	ErrIPNotAllowed = errors.New("IP not allowed")
 )
 
 func (s *server) IPXE(w http.ResponseWriter, r *http.Request) {
 	tmpl, err := template.New("ipxe").Parse(ipxeTemplate)
 	if err != nil {
+		log.Infof("GET /ipxe 500 %v", err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
 	vars, err := s.getIPXEVars(r)
 	if err != nil {
+		log.Infof("GET /ipxe 403 %v", err.Error())
 		http.Error(w, err.Error(), http.StatusForbidden)
 		return
 	}
 
 	err = tmpl.Execute(w, vars)
 	if err != nil {
+		log.Infof("GET /ipxe 500 %v", err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
+	log.Infof("GET /ipxe 200")
 }
 
 func (s *server) Kernel(w http.ResponseWriter, r *http.Request) {
@@ -65,9 +70,9 @@ func (s *server) Squashfs(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *server) getIPXEVars(r *http.Request) (map[string]string, error) {
-	ipxeConfig := s.getIPXEByIP(r)
-	if ipxeConfig == nil {
-		return nil, ErrIPNotAllowed
+	ipxeConfig, err := s.getIPXEByIP(r)
+	if err != nil {
+		return nil, err
 	}
 
 	kernelArgs := map[string]string{}
@@ -94,8 +99,9 @@ func (s *server) getIPXEVars(r *http.Request) (map[string]string, error) {
 	return vars, nil
 }
 
-func (s *server) getIPXEByIP(r *http.Request) *config.IPXE {
-	requestIP := r.RemoteAddr
+func (s *server) getIPXEByIP(r *http.Request) (*config.IPXE, error) {
+	requestAddr := r.RemoteAddr
+	requestIP := strings.Split(requestAddr, ":")[0]
 
 	for _, i := range s.ipxe {
 		found := false
@@ -106,9 +112,9 @@ func (s *server) getIPXEByIP(r *http.Request) *config.IPXE {
 			}
 		}
 		if found {
-			return &i
+			return &i, nil
 		}
 	}
 
-	return nil
+	return nil, fmt.Errorf("IP %s not allowed", requestIP)
 }
