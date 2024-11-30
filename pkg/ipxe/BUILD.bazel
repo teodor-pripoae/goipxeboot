@@ -1,0 +1,17 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "ipxe",
+    srcs = [
+        "handlers.go",
+        "options.go",
+        "routes.go",
+        "server.go",
+    ],
+    importpath = "toni.systems/goisoboot/pkg/ipxe",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@com_github_gorilla_mux//:mux",
+        "@com_github_sirupsen_logrus//:logrus",
+    ],
+)
