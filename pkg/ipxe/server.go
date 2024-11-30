@@ -5,11 +5,13 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"strconv"
 	"text/template"
 	"time"
 
 	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
+	"toni.systems/goisoboot/pkg/config"
 )
 
 var (
@@ -17,10 +19,15 @@ var (
 	ErrMissingPort = errors.New("missing port")
 
 	dhcpTemplate = `
-if exists user-class and option user-class = "iPXE" {
-    filename "http://{{ .serverIP }}/ipxe";
-} else {
-    filename "ipxe.efi";
+next-server {{ .serverIP }};
+filename "ipxe.efi";
+
+class "pxeclients" {
+	if exists user-class and option user-class = "iPXE" {
+	    filename "http://{{ .serverIP }}:{{ .serverPort }}/ipxe";
+	} else {
+	    filename "ipxe.efi";
+	}
 }`
 )
 
@@ -33,13 +40,18 @@ type Server interface {
 }
 
 type server struct {
-	ip     string
-	port   int
-	router *mux.Router
+	ip      string
+	port    int
+	router  *mux.Router
+	rootDir string
+	ipxe    []config.IPXE
 }
 
 func New(options ...Option) (Server, error) {
-	s := &server{}
+	s := &server{
+		rootDir: "./",
+		ipxe:    []config.IPXE{},
+	}
 
 	s.router = router(s)
 
@@ -78,7 +90,10 @@ func (s *server) printInfo() {
 	log.Infof("Setup ISC DHCP Server with the following configuration:")
 	tmpl, _ := template.New("dhcp").Parse(dhcpTemplate)
 	var buff bytes.Buffer
-	_ = tmpl.Execute(&buff, map[string]string{"serverIP": s.ip})
+	_ = tmpl.Execute(&buff, map[string]string{
+		"serverIP":   s.ip,
+		"serverPort": strconv.Itoa(s.port),
+	})
 
 	log.Infof(buff.String())
 }
