@@ -3,7 +3,7 @@ load("@rules_go//go:def.bzl", "go_library")
 go_library(
     name = "tftp",
     srcs = ["server.go"],
-    importpath = "toni.systems/goisoboot/pkg/tftp",
+    importpath = "toni.systems/goipxeboot/pkg/tftp",
     visibility = ["//visibility:public"],
     deps = [
         "@com_github_pin_tftp_v3//:tftp",

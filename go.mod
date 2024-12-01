@@ -1,4 +1,4 @@
-module toni.systems/goisoboot
+module toni.systems/goipxeboot
 
 go 1.22.0
 

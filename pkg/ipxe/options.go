@@ -1,6 +1,6 @@
 package ipxe
 
-import "toni.systems/goisoboot/pkg/config"
+import "toni.systems/goipxeboot/pkg/config"
 
 type Option func(*server)
 

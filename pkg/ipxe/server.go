@@ -11,7 +11,7 @@ import (
 
 	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
-	"toni.systems/goisoboot/pkg/config"
+	"toni.systems/goipxeboot/pkg/config"
 )
 
 var (

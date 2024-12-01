@@ -4,7 +4,7 @@ import "github.com/spf13/cobra"
 
 func New() *cobra.Command {
 	cmd := &cobra.Command{
-		Use: "goisoboot",
+		Use: "goipxeboot",
 	}
 
 	cmd.AddCommand(NewServerCmd())

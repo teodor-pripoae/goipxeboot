@@ -5,9 +5,9 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
-	"toni.systems/goisoboot/pkg/config"
-	"toni.systems/goisoboot/pkg/ipxe"
-	"toni.systems/goisoboot/pkg/tftp"
+	"toni.systems/goipxeboot/pkg/config"
+	"toni.systems/goipxeboot/pkg/ipxe"
+	"toni.systems/goipxeboot/pkg/tftp"
 )
 
 func quit(message string) {
@@ -61,12 +61,12 @@ func server(cmd *cobra.Command, args []string) {
 func NewServerCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "server",
-		Short: "Start the goisoboot server",
+		Short: "Start the goipxeboot server",
 		Long:  "Starts TFTP and HTTP Server",
 		Run:   server,
 	}
 
-	cmd.Flags().StringP("config", "c", "goisoboot.yaml", "Config file to use")
+	cmd.Flags().StringP("config", "c", "goipxeboot.yaml", "Config file to use")
 
 	return cmd
 }

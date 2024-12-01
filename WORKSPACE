@@ -1,1 +1,1 @@
-workspace(name = "goisoboot")
+workspace(name = "goipxeboot")

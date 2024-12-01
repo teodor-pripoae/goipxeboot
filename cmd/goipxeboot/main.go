@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"toni.systems/goisoboot/pkg/cli"
+	"toni.systems/goipxeboot/pkg/cli"
 )
 
 func main() {

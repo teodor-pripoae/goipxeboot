@@ -4,6 +4,6 @@
 bin/
 
 bazel-bin
-bazel-goisoboot*
+bazel-goipxeboot*
 bazel-out
 bazel-testlogs

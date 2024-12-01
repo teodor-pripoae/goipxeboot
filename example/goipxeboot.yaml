@@ -1,4 +1,4 @@
-rootDir: "/var/lib/goisoboot"
+rootDir: "/var/lib/goipxeboot"
 http:
     ip: "192.168.1.100"
     port: 8080

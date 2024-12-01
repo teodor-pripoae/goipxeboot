@@ -3,7 +3,7 @@ load("@rules_go//go:def.bzl", "go_library")
 go_library(
     name = "config",
     srcs = ["config.go"],
-    importpath = "toni.systems/goisoboot/pkg/config",
+    importpath = "toni.systems/goipxeboot/pkg/config",
     visibility = ["//visibility:public"],
     deps = ["@in_gopkg_yaml_v2//:yaml_v2"],
 )
