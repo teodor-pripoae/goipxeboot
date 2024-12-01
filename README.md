@@ -8,7 +8,7 @@ This server handles all parts required for iPXE booting the system, apart from t
 
 It needs a DHCP server which is able to set up next-server and filename options. The filename option should be set to `ipxe.efi` for UEFI systems and this project currently does not support BIOS systems.
 
-It will spawn a TFTP server on port `69/udp` and a HTTP server on port `8080/tcp` which will serve the iPXE efi firware and the iPXE script. It also supports serving the kernel, initrd and squashfs files via HTTP.
+It will spawn a TFTP server on port `69/udp` and a HTTP server on port `8080/tcp` which will serve the iPXE efi firmware and the iPXE script. It also supports serving the kernel, initrd and squashfs files via HTTP.
 
 ## Building
 
