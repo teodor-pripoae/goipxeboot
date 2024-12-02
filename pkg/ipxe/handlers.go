@@ -99,7 +99,7 @@ func (s *server) getIPXEVars(r *http.Request) (map[string]string, error) {
 	return vars, nil
 }
 
-func (s *server) getIPXEByIP(r *http.Request) (*config.IPXE, error) {
+func (s *server) getIPXEByIP(r *http.Request) (config.IPXE, error) {
 	requestAddr := r.RemoteAddr
 	requestIP := strings.Split(requestAddr, ":")[0]
 
@@ -112,9 +112,9 @@ func (s *server) getIPXEByIP(r *http.Request) (*config.IPXE, error) {
 			}
 		}
 		if found {
-			return &i, nil
+			return i, nil
 		}
 	}
 
-	return nil, fmt.Errorf("IP %s not allowed", requestIP)
+	return config.IPXE{}, fmt.Errorf("IP %s not allowed", requestIP)
 }
