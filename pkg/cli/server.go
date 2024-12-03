@@ -25,7 +25,7 @@ func server(cmd *cobra.Command, args []string) {
 		quit(err.Error())
 	}
 
-	tftp := tftp.New()
+	tftp := tftp.New(tftp.WithRootDir(config.GetRootDir()))
 	server, err := ipxe.New(
 		ipxe.WithIP(config.HTTP.IP),
 		ipxe.WithPort(config.HTTP.Port),

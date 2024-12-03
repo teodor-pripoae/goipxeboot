@@ -4,6 +4,7 @@ import (
 	"errors"
 	"io"
 	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/pin/tftp/v3"
@@ -29,9 +30,10 @@ type Server interface {
 type server struct {
 	tftp     *tftp.Server
 	filename string
+	root     string
 }
 
-func New() Server {
+func New(options ...Option) Server {
 	s := &server{
 		filename: "./ipxe/ipxe.efi",
 	}
@@ -39,6 +41,10 @@ func New() Server {
 	t := tftp.NewServer(s.ReadHandler, nil)
 	t.SetTimeout(timeout)
 	s.tftp = t
+
+	for _, option := range options {
+		option(s)
+	}
 
 	return s
 }
@@ -55,7 +61,9 @@ func (s *server) ReadHandler(filename string, rf io.ReaderFrom) error {
 		return ErrInvalidFilename
 	}
 
-	file, err := os.Open(s.filename)
+	path := filepath.Join(s.root, filename)
+
+	file, err := os.Open(path)
 	if err != nil {
 		return errors.Join(err, ErrFailedToOpenFile)
 	}
