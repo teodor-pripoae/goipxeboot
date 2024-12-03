@@ -36,7 +36,7 @@ install -m 700 -d %{buildroot}/var/lib/goipxeboot
 %systemd_preun goipxeboot.service
 
 %files
-/%{_sysconfdir}/goipxeboot.yaml
+%config(noreplace) /%{_sysconfdir}/goipxeboot.yaml
 /%{_bindir}/goipxeboot
 /etc/systemd/system/goipxeboot.service
 /var/lib/goipxeboot
