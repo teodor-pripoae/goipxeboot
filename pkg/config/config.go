@@ -21,6 +21,7 @@ type IPXE struct {
 	Name       string            `yaml:"name"`
 	IPs        []string          `yaml:"ips"`
 	KernelArgs map[string]string `yaml:"kernelArgs"`
+	ServerIP   string            `yaml:"serverIP"`
 }
 
 func FromFile(path string) (*Config, error) {

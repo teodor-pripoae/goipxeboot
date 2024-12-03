@@ -56,6 +56,7 @@ ipxe:
     - name: "example" # Name of the iPXE configuration
       ips: ["192.168.1.124"] # Allowed IPs
       # ips: ["192.168.122.1/24"] # Allowed range
+      # serverIP: "192.168.2.2" # Allow overriding the server IP just for this configuration
       kernelArgs: # Custom kernel arguments used for booting the system
           - "network-config=disabled"
 ```

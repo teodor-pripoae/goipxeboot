@@ -91,7 +91,7 @@ func (s *server) getIPXEVars(r *http.Request) (map[string]string, error) {
 	vars := make(map[string]string)
 
 	vars["ip"] = r.RemoteAddr
-	vars["serverIP"] = s.ip
+	vars["serverIP"] = s.getServerIP(ipxeConfig)
 	vars["serverPort"] = strconv.Itoa(s.port)
 	vars["name"] = ipxeConfig.Name
 	vars["extraKernelArgs"] = strings.Join(extraKernelArgsList, " ")
@@ -114,4 +114,11 @@ func (s *server) getIPXEByIP(r *http.Request) (config.IPXE, error) {
 	}
 
 	return config.IPXE{}, fmt.Errorf("IP %s not allowed", requestIP)
+}
+
+func (s *server) getServerIP(ipxeConfig config.IPXE) string {
+	if ipxeConfig.ServerIP != "" {
+		return ipxeConfig.ServerIP
+	}
+	return s.ip
 }
