@@ -104,15 +104,12 @@ func (s *server) getIPXEByIP(r *http.Request) (config.IPXE, error) {
 	requestIP := strings.Split(requestAddr, ":")[0]
 
 	for _, i := range s.ipxe {
-		found := false
-		for _, ip := range i.IPs {
-			if ip == requestIP {
-				found = true
-				break
+		for _, p := range i.IPs {
+			matcher, _ := s.matchers[p]
+			if matcher(requestIP) {
+				log.Infof("Found pattern %s matching ip %s, selecting configuration %s", p, requestIP, i.Name)
+				return i, nil
 			}
-		}
-		if found {
-			return i, nil
 		}
 	}
 

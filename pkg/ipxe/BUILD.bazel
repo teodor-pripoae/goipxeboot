@@ -1,9 +1,12 @@
-load("@rules_go//go:def.bzl", "go_library")
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+# gazelle:go_test file
 
 go_library(
     name = "ipxe",
     srcs = [
         "handlers.go",
+        "matcher.go",
         "options.go",
         "routes.go",
         "server.go",
@@ -15,4 +18,12 @@ go_library(
         "@com_github_gorilla_mux//:mux",
         "@com_github_sirupsen_logrus//:logrus",
     ],
+)
+
+go_test(
+    name = "matcher_test",
+    size = "small",
+    srcs = ["matcher_test.go"],
+    embed = [":ipxe"],
+    deps = ["@com_github_stretchr_testify//assert"],
 )

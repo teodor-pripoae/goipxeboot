@@ -40,11 +40,12 @@ type Server interface {
 }
 
 type server struct {
-	ip      string
-	port    int
-	router  *mux.Router
-	rootDir string
-	ipxe    []config.IPXE
+	ip       string
+	port     int
+	router   *mux.Router
+	rootDir  string
+	ipxe     []config.IPXE
+	matchers map[string]Matcher
 }
 
 func New(options ...Option) (Server, error) {
@@ -65,6 +66,13 @@ func New(options ...Option) (Server, error) {
 	if s.port == 0 {
 		return nil, ErrMissingPort
 	}
+
+	matchers, err := loadMatchers(s.ipxe)
+	if err != nil {
+		return nil, err
+	}
+
+	s.matchers = matchers
 
 	return s, nil
 }
@@ -96,4 +104,25 @@ func (s *server) printInfo() {
 	})
 
 	log.Infof(buff.String())
+}
+
+func loadMatchers(ipxe []config.IPXE) (map[string]Matcher, error) {
+	patternsMap := make(map[string]Matcher)
+
+	for _, i := range ipxe {
+		for _, p := range i.IPs {
+			if _, ok := patternsMap[p]; ok {
+				continue
+			}
+
+			matcher, err := DetectMatcher(p, DefaultMatchers)
+			if err != nil {
+				return nil, fmt.Errorf("failed to detect matcher for %s: %w", p, err)
+			}
+
+			patternsMap[p] = matcher
+		}
+	}
+
+	return patternsMap, nil
 }
