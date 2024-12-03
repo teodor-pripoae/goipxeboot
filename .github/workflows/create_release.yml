@@ -1,0 +1,32 @@
+name: Create release
+
+on:
+  push:
+    branches: [master]
+jobs:
+  bazel:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: bazelbuild/setup-bazelisk@v3
+      - name: Build
+        run: bazel build //...
+      - name: Run tests
+        run: bazel test //...
+
+  semantic-release:
+    needs: bazel
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "lts/*"
+      - name: Semantic Release
+        run: |
+          npm install -g semantic-release @semantic-release/github @semantic-release/changelog @semantic-release/exec @semantic-release/git
+          semantic-release

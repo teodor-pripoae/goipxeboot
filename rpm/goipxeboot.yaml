@@ -1,0 +1,12 @@
+rootDir: "/var/lib/goipxeboot" # Root directory where the filesystems are stored
+http:
+  # ip: "192.168.1.100" # IP of the http server (needed for iPXE script)
+  ip: "127.0.0.1"
+  port: 8080 # Port of the http server (needed for iPXE script)
+ipxe:
+  # - name: "example" # Name of the iPXE configuration
+  #   ips: ["192.168.1.124"] # Allowed IPs
+  #   # ips: ["192.168.122.1/24"] # Allowed range
+  #   # serverIP: "192.168.2.2" # Allow overriding the server IP just for this configuration
+  #   kernelArgs: # Custom kernel arguments used for booting the system
+  #       - "network-config=disabled"

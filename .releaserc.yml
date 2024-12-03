@@ -1,0 +1,45 @@
+---
+verifyConditions:
+  - "@semantic-release/github"
+prepare:
+  - - "@semantic-release/git"
+    - assets: ["package.json"]
+      message: "chore(release): ${nextRelease.version}\n\n${nextRelease.notes}"
+publish:
+  - "@semantic-release/github"
+plugins:
+  - - "@semantic-release/commit-analyzer"
+    - releaseRules:
+        - breaking: true
+          release: "major"
+        - revert: true
+          release: "patch"
+        - type: "feat"
+          release: "minor"
+        - type: "fix"
+          release: "patch"
+        - type: "perf"
+          release: "patch"
+        - type: "build"
+          release: "patch"
+        - type: "minor"
+          release: "minor"
+        - type: "bump"
+          release: "patch"
+        - type: "test"
+          release: false
+        - type: "ci"
+          release: false
+  - "@semantic-release/changelog"
+  - "@semantic-release/release-notes-generator"
+  - "@semantic-release/exec"
+  - - "@semantic-release/git"
+    - assets: ["package.json"]
+      message: "chore(release): ${nextRelease.version}\n\n${nextRelease.notes}"
+  - "@semantic-release/github"
+success: false
+fail: false
+npmPublish: false
+branches:
+  - name: master
+

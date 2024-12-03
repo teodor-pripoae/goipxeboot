@@ -1,0 +1,13 @@
+[Unit]
+Description=goipxeboot
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=root
+ExecStart=goipxeboot server -c /etc/goipxeboot.yaml
+Restart=always
+RestartSec=3
+LimitNOFILE=infinity
+[Install]
+WantedBy=multi-user.target

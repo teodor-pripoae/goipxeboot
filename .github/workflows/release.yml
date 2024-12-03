@@ -1,0 +1,38 @@
+name: Publish release
+
+on:
+  release:
+    types: [published]
+env:
+  TAG: "${{ github.ref_name }}"
+jobs:
+  release-binary:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: bazelbuild/setup-bazelisk@v3
+      - name: Write version file
+        run: echo "VERSION = \"${{ github.ref_name }}\"" > version.bzl
+      - name: Build
+        run: bazel build //...
+      - name: Build
+        run: bazel test //...
+      - name: Upload binary
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.BOT_GITHUB_TOKEN }}
+          file: ./bazel-bin/cmd/goipxeboot/goipxeboot_/goipxeboot
+          asset_name: goipxeboot-amd64
+          tag: ${{ github.ref }}
+      - name: Set up the version
+        run: |
+          VERSION="${{ env.TAG }}"
+          STRIPPED_VERSION="${VERSION#v}"
+          echo "STRIPPED_VERSION=${STRIPPED_VERSION}" >> $GITHUB_ENV
+      - name: Upload rpm
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.BOT_GITHUB_TOKEN }}
+          file: ./bazel-bin/rpm/goipxeboot-x86_64.rpm
+          asset_name: goipxeboot-${{ env.STRIPPED_VERSION }}-1.x86_64.rpm
+          tag: ${{ github.ref }}
