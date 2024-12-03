@@ -25,7 +25,7 @@ tar xvf bazel-out/k8-fastbuild/bin/rpm/archive.tar.gz
 
 %install
 install -Dpm 755 goipxeboot %{buildroot}%{_bindir}/goipxeboot
-install -Dpm 644 goipxeboot.service %{buildroot}%{_unitdir}/goipxeboot.service
+install -Dpm 644 goipxeboot.service %{buildroot}/etc/systemd/system/goipxeboot.service
 install -Dpm 644 goipxeboot.yaml %{buildroot}%{_sysconfdir}/goipxeboot.yaml
 install -m 700 -d %{buildroot}/var/lib/goipxeboot
 
@@ -37,6 +37,6 @@ install -m 700 -d %{buildroot}/var/lib/goipxeboot
 
 %files
 /%{_sysconfdir}/goipxeboot.yaml
-/%{_unitdir}/goipxeboot.service
 /%{_bindir}/goipxeboot
+/etc/systemd/system/goipxeboot.service
 /var/lib/goipxeboot
