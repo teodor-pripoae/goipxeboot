@@ -5,6 +5,7 @@ go_library(
     srcs = [
         "main.go",
         "server.go",
+        "version.go",
     ],
     importpath = "toni.systems/goipxeboot/pkg/cli",
     visibility = ["//visibility:public"],
