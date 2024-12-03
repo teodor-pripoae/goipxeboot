@@ -61,7 +61,8 @@ func (s *server) ReadHandler(filename string, rf io.ReaderFrom) error {
 		return ErrInvalidFilename
 	}
 
-	path := filepath.Join(s.root, filename)
+	path := filepath.Join(s.root, s.filename)
+	log.Infof("Opening file %s", path)
 
 	file, err := os.Open(path)
 	if err != nil {
