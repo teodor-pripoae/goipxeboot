@@ -37,6 +37,7 @@ type Server interface {
 	Kernel(w http.ResponseWriter, r *http.Request)
 	Initrd(w http.ResponseWriter, r *http.Request)
 	Squashfs(w http.ResponseWriter, r *http.Request)
+	Health(w http.ResponseWriter, r *http.Request)
 }
 
 type server struct {
@@ -103,7 +104,7 @@ func (s *server) printInfo() {
 		"serverPort": strconv.Itoa(s.port),
 	})
 
-	log.Infof(buff.String())
+	log.Info(buff.String())
 }
 
 func loadMatchers(ipxe []config.IPXE) (map[string]Matcher, error) {

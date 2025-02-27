@@ -51,6 +51,10 @@ func (s *server) IPXE(w http.ResponseWriter, r *http.Request) {
 	log.Infof("GET /ipxe 200")
 }
 
+func (s *server) Health(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "OK\n")
+}
+
 func (s *server) Kernel(w http.ResponseWriter, r *http.Request) {
 	filename := filepath.Join(s.rootDir, "linux", mux.Vars(r)["name"], "vmlinuz")
 	log.Infof("Serving kernel: %s", filename)
@@ -105,8 +109,8 @@ func (s *server) getIPXEByIP(r *http.Request) (config.IPXE, error) {
 
 	for _, i := range s.ipxe {
 		for _, p := range i.IPs {
-			matcher, _ := s.matchers[p]
-			if matcher(requestIP) {
+			matcher, ok := s.matchers[p]
+			if ok && matcher(requestIP) {
 				log.Infof("Found pattern %s matching ip %s, selecting configuration %s", p, requestIP, i.Name)
 				return i, nil
 			}

@@ -32,6 +32,9 @@ func server(cmd *cobra.Command, args []string) {
 		ipxe.WithRootDir(config.GetRootDir()),
 		ipxe.WithIPXE(config.IPXE),
 	)
+	if err != nil {
+		quit(err.Error())
+	}
 
 	errChan := make(chan error)
 	done := make(chan struct{})
