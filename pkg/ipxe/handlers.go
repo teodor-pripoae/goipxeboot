@@ -15,15 +15,20 @@ import (
 
 var (
 	ipxeTemplate = `#!ipxe
-kernel http://{{ .serverIP }}:{{ .serverPort }}/linux/{{ .name }}/vmlinuz rd.neednet=1 rd.live.debug=1 ip=dhcp  root=live:http://{{ .serverIP }}:{{ .serverPort }}/linux/{{ .name }}/squashfs initrd=initrd rootfstype=squashfs {{ .extraKernelArgs }}
+kernel http://{{ .serverIP }}:{{ .serverPort }}/linux/{{ .name }}/vmlinuz {{ .extraKernelArgs }}
 initrd http://{{ .serverIP }}:{{ .serverPort }}/linux/{{ .name }}/initrd
 boot`
-	defaultKernelArgs = map[string]string{
-		"rd.fstab":            "0",
-		"rd.luks":             "0",
-		"rd.lvm":              "0",
-		"rd.md":               "0",
-		"rd.net.timeout.dhcp": "10",
+	defaultKernelArgs = map[string]*string{
+		"rd.neednet":          stringPointer("1"),
+		"rd.live.debug":       stringPointer("1"),
+		"rd.fstab":            stringPointer("0"),
+		"rd.luks":             stringPointer("0"),
+		"rd.lvm":              stringPointer("0"),
+		"rd.md":               stringPointer("0"),
+		"rd.net.timeout.dhcp": stringPointer("10"),
+		"ip":                  stringPointer("dhcp"),
+		"initrd":              stringPointer("initrd"),
+		"rootfstype":          stringPointer("squashfs"),
 	}
 )
 
@@ -79,25 +84,37 @@ func (s *server) getIPXEVars(r *http.Request) (map[string]string, error) {
 		return nil, err
 	}
 
-	kernelArgs := map[string]string{}
-	for k, v := range defaultKernelArgs {
-		kernelArgs[k] = v
-	}
-	for k, v := range ipxeConfig.KernelArgs {
-		kernelArgs[k] = v
-	}
-
-	extraKernelArgsList := make([]string, 0)
-	for k, v := range kernelArgs {
-		extraKernelArgsList = append(extraKernelArgsList, k+"="+v)
-	}
-
 	vars := make(map[string]string)
 
 	vars["ip"] = r.RemoteAddr
 	vars["serverIP"] = s.getServerIP(ipxeConfig)
 	vars["serverPort"] = strconv.Itoa(s.port)
 	vars["name"] = ipxeConfig.Name
+
+	kernelArgs := map[string]*string{}
+	if !ipxeConfig.SkipDefaults {
+		for k, v := range defaultKernelArgs {
+			kernelArgs[k] = v
+		}
+		kernelArgs["root"] = stringPointer(
+			fmt.Sprintf("live:http://%s:%s/linux/%s/squashfs", vars["serverIP"], vars["serverPort"], vars["name"]),
+		)
+	}
+
+	for k, v := range ipxeConfig.KernelArgs {
+		kernelArgs[k] = v
+	}
+
+	extraKernelArgsList := make([]string, 0)
+	for k, v := range kernelArgs {
+		vstr := k
+		if v != nil {
+			vstr += "=" + *v
+		}
+
+		extraKernelArgsList = append(extraKernelArgsList, vstr)
+	}
+
 	vars["extraKernelArgs"] = strings.Join(extraKernelArgsList, " ")
 
 	return vars, nil
@@ -125,4 +142,9 @@ func (s *server) getServerIP(ipxeConfig config.IPXE) string {
 		return ipxeConfig.ServerIP
 	}
 	return s.ip
+}
+
+func stringPointer(s string) *string {
+	ptr := s
+	return &ptr
 }
