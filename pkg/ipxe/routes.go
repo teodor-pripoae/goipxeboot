@@ -11,6 +11,7 @@ func router(server Server) *mux.Router {
 	r.HandleFunc("/linux/{name}/vmlinuz", server.Kernel).Methods("GET")
 	r.HandleFunc("/linux/{name}/initrd", server.Initrd).Methods("GET")
 	r.HandleFunc("/linux/{name}/squashfs", server.Squashfs).Methods("GET")
+	r.HandleFunc("/linux/{name}/filesystem.squashfs", server.Squashfs).Methods("GET")
 
 	return r
 }
